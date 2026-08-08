@@ -2,9 +2,10 @@
  * Konversi teks tanggal & jam berbahasa Indonesia menjadi objek Date.
  * Contoh input: "9 Agustus 2026 06:30"
  *
- * Catatan: Date dibuat menggunakan timezone lokal server (local time).
- * Pastikan server berjalan di timezone WIB (Asia/Jakarta), atau sesuaikan
- * secara manual jika server berjalan di timezone lain.
+ * PENTING: Waktu yang diketik user SELALU dianggap WIB (UTC+7), TIDAK
+ * bergantung pada timezone tempat server Node berjalan. Ini untuk
+ * menghindari bug di mana server yang jalan di UTC (umum di cloud/Docker)
+ * salah menghitung apakah suatu waktu sudah lewat atau belum.
  */
 
 const MONTH_MAP: Record<string, number> = {
@@ -36,20 +37,19 @@ const MONTH_MAP: Record<string, number> = {
 const dateTimeRegex =
   /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+([01]?\d|2[0-3]):([0-5]\d)/i;
 
+// WIB = UTC+7, tidak ada DST di Indonesia, jadi offset ini fixed selamanya.
+const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
+
 /**
- * Parse string tanggal Indonesia menjadi objek Date.
- * Mengembalikan null jika format tidak dikenali atau tanggalnya tidak valid
- * (misal: 31 Februari, atau nama bulan yang tidak ada di MONTH_MAP).
+ * Parse string tanggal Indonesia (dianggap WIB) menjadi objek Date (instant
+ * UTC yang benar & absolut). Mengembalikan null jika format tidak dikenali
+ * atau tanggalnya tidak valid (misal: 31 Februari).
  */
 export function stringToDate(deadline: string): Date | null {
   const match = deadline.match(dateTimeRegex);
   if (!match) return null;
 
   const [, dayStr, monthStr, yearStr, hourStr, minuteStr] = match;
-
-  // Guard eksplisit: kalau tsconfig pakai `noUncheckedIndexedAccess`,
-  // TS menganggap tiap elemen hasil destructuring array bisa `undefined`,
-  // meski secara runtime regex ini punya 5 capture group wajib.
   if (!dayStr || !monthStr || !yearStr || !hourStr || !minuteStr) return null;
 
   const month = MONTH_MAP[monthStr.toLowerCase()];
@@ -60,19 +60,21 @@ export function stringToDate(deadline: string): Date | null {
   const hour = parseInt(hourStr, 10);
   const minute = parseInt(minuteStr, 10);
 
-  const date = new Date(year, month, day, hour, minute, 0, 0);
-
-  // Validasi ulang komponen tanggal, untuk menangkap kasus seperti
-  // "31 Februari" yang otomatis "dibulatkan" ke Maret oleh Date bawaan JS
+  // Bangun instant dari angka yang diketik user seolah-olah UTC dulu (biar
+  // gampang divalidasi tanpa kena pengaruh timezone lokal server).
+  const rawUtcMillis = Date.UTC(year, month, day, hour, minute, 0, 0);
+  const check = new Date(rawUtcMillis);
   if (
-    date.getFullYear() !== year ||
-    date.getMonth() !== month ||
-    date.getDate() !== day ||
-    date.getHours() !== hour ||
-    date.getMinutes() !== minute
+    check.getUTCFullYear() !== year ||
+    check.getUTCMonth() !== month ||
+    check.getUTCDate() !== day ||
+    check.getUTCHours() !== hour ||
+    check.getUTCMinutes() !== minute
   ) {
     return null;
   }
 
-  return date;
+  // Angka yang diketik user itu sebenarnya WIB (UTC+7), bukan UTC. Geser
+  // mundur 7 jam supaya dapat instant UTC yang sesungguhnya.
+  return new Date(rawUtcMillis - WIB_OFFSET_MS);
 }
