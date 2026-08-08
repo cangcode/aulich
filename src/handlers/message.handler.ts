@@ -58,7 +58,7 @@ export async function handleMessagesUpsert(
         .join("\n\n");
 
       await sock.sendMessage(remoteJid, {
-        text: `📋 *Daftar Pengingat Aktif*\n\n${listText}\n\nKalo moki hapus i ketik 👇,\n/hapuspengingat <nomor>`,
+        text: `📋 *Daftar Pengingat Aktif*\n\n${listText}\n\nKalo moki hapus i ketik 👇\n/hapuspengingat <nomor>`,
       });
       continue;
     }
@@ -123,7 +123,7 @@ export async function handleMessagesUpsert(
       });
 
       await sock.sendMessage(remoteJid, {
-        text: `Oce Bos😁!, nanti ku kasi ingat ki di *${deadlineText}*!\nKirimkan pesan yang mau saya kasi ingatkanki!`,
+        text: `Oce Bos😁! nanti ku kasi ingat ki di *${deadlineText}*!\nKirimkan pesan yang mau saya kasi ingatkanki!`,
       });
       continue;
     }
