@@ -48,7 +48,7 @@ export async function handleMessagesUpsert(
 
       if (reminders.length === 0) {
         await sock.sendMessage(remoteJid, {
-          text: `Belum ada pengingat aktif di chat ini.`,
+          text: `Nda adapi pengingat yang aktif di chat ini bosku.`,
         });
         continue;
       }
@@ -58,7 +58,7 @@ export async function handleMessagesUpsert(
         .join("\n\n");
 
       await sock.sendMessage(remoteJid, {
-        text: `📋 *Daftar Pengingat Aktif*\n\n${listText}\n\nUntuk menghapus, ketik: /hapuspengingat <nomor>`,
+        text: `📋 *Daftar Pengingat Aktif*\n\n${listText}\n\nKalo moki hapus i ketik 👇,\n/hapuspengingat <nomor>`,
       });
       continue;
     }
@@ -74,7 +74,7 @@ export async function handleMessagesUpsert(
 
       if (!indexStr || isNaN(index) || !target) {
         await sock.sendMessage(remoteJid, {
-          text: `Format salah atau nomor tidak ditemukan.\nKetik /listpengingat dulu untuk lihat nomornya, lalu /hapuspengingat <nomor>.`,
+          text: `Salahki format atau nomor ta ndak ditemukan.\nKetik /listpengingat dulu kalau mauki lihat nomornya,\n baru ketik /hapuspengingat <nomor>.`,
         });
         continue;
       }
@@ -93,7 +93,7 @@ export async function handleMessagesUpsert(
 
       if (!match || !match[0]) {
         await sock.sendMessage(remoteJid, {
-          text: `Format pesan salah.\nContoh penggunaan: /ingatkan 10 Agustus 2026 09:00`,
+          text: `Salah ki formatnya.\nBegini contohnya eee: /ingatkan 10 Agustus 2026 09:00`,
         });
         continue;
       }
@@ -103,14 +103,14 @@ export async function handleMessagesUpsert(
 
       if (!targetDate) {
         await sock.sendMessage(remoteJid, {
-          text: `Gagal membaca tanggal/jam. Periksa kembali format bulan atau tanggalnya.`,
+          text: `Tidak bisa dibaca tanggal/jam yang takirim. periksa dulu kembali perbaiki formatnya bos!`,
         });
         continue;
       }
 
       if (targetDate.getTime() <= Date.now()) {
         await sock.sendMessage(remoteJid, {
-          text: `Tanggal/jam tersebut sudah lewat (dihitung sebagai WIB). Silakan masukkan waktu di masa depan.`,
+          text: `Lewat mi itu tanggal yang ta kasi bos, kocak lu bos!`,
         });
         continue;
       }
@@ -123,7 +123,7 @@ export async function handleMessagesUpsert(
       });
 
       await sock.sendMessage(remoteJid, {
-        text: `Baiklah, saya akan mengingatkan Anda nanti pada *${deadlineText}*!\nKirim pesan yang perlu saya ingatkan.`,
+        text: `Oce Bos😁!, nanti ku kasi ingat ki di *${deadlineText}*!\nKirimkan pesan yang mau saya kasi ingatkanki!`,
       });
       continue;
     }
