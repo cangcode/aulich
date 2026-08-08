@@ -110,7 +110,7 @@ export async function handleMessagesUpsert(
 
       if (targetDate.getTime() <= Date.now()) {
         await sock.sendMessage(remoteJid, {
-          text: `Lewat mi itu tanggal yang ta kasi bos, kocak lu bos!`,
+          text: `Lewat mi itu jam/tanggal yang ta kasi kurang ajar!`,
         });
         continue;
       }
@@ -168,7 +168,7 @@ export async function handleMessagesUpsert(
       });
 
       await sock.sendMessage(remoteJid, {
-        text: `✅ Pengingat berhasil dicatat!\n📅 Waktu: *${pending.deadlineText}*\n📝 Pesan: "${reminderText}"\n\nKetik /listpengingat untuk lihat semua pengingat aktif.`,
+        text: `✅ Okesi bos sudah mi ku catat!\n📅 Waktu: *${pending.deadlineText}*\n📝 Pesan:\n${reminderText}\n\nKetik /listpengingat kalau mauki lihat semua pengingat yang aktif.`,
       });
       continue;
     }
