@@ -168,7 +168,7 @@ export async function handleMessagesUpsert(
       });
 
       await sock.sendMessage(remoteJid, {
-        text: `✅ Okesi bos sudah mi ku catat!\n📅 Waktu: *${pending.deadlineText}*\n📝 Pesan:\n${reminderText}\n\nKetik /listpengingat kalau mauki lihat semua pengingat yang aktif.`,
+        text: `✅ Okesi bos sudah mi ku catat!\n📅 Waktu: *${pending.deadlineText}*\n📝 Pesan:\n\n${reminderText}\n\nKetik /listpengingat kalau mauki lihat semua pengingat yang aktif.`,
       });
       continue;
     }
