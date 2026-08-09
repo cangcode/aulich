@@ -38,7 +38,7 @@ const dateTimeRegex =
   /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+([01]?\d|2[0-3]):([0-5]\d)/i;
 
 // WIB = UTC+7, tidak ada DST di Indonesia, jadi offset ini fixed selamanya.
-const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
+const WIB_OFFSET_MS = 8 * 60 * 60 * 1000;
 
 /**
  * Parse string tanggal Indonesia (dianggap WIB) menjadi objek Date (instant
